@@ -19,10 +19,13 @@ public class SaveChestsCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("savechests")) {
-            if (sender.hasPermission("alphachest.save")) {
+            if (sender.hasPermission("alphachest.save")) 
+            {
                 int savedChests = chestManager.save();
                 Teller.tell(sender, Type.SUCCESS, "Saved " + savedChests + " chests.");
-            } else {
+            } 
+            else 
+            {
                 Teller.tell(sender, Type.ERROR, "You are not allowed to use this command.");
             }
 

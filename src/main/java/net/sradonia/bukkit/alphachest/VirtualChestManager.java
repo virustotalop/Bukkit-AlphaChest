@@ -11,6 +11,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.virustotal.localuuidcache.UUIDApi;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
@@ -36,14 +38,15 @@ public class VirtualChestManager {
      */
     private void load() {
         dataFolder.mkdirs();
-
+        
         FilenameFilter filter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return name.endsWith(YAML_CHEST_EXTENSION);
             }
         };
 
-        for (File chestFile : dataFolder.listFiles(filter)) {
+        for (File chestFile : this.dataFolder.listFiles(filter)) 
+        {
             String chestFileName = chestFile.getName();
             try {
                 try {
@@ -52,15 +55,15 @@ public class VirtualChestManager {
                 } catch (IllegalArgumentException e) {
                     // Assume that the filename isn't a UUID, and is therefore an old player-name chest
                     String playerName = chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH);
+     
                     boolean flagPlayerNotFound = true;
-
-                    for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                        // Search all the known players, load inventory, flag old file for deletion
-                        if (player.getName().equalsIgnoreCase(playerName)) {
-                            flagPlayerNotFound = false;
-                            chests.put(player.getUniqueId(), InventoryIO.loadFromYaml(chestFile));
-                            chestFile.deleteOnExit();
-                        }
+       
+                    if(UUIDApi.uuidFromName(playerName) != null)
+                    {
+                    	flagPlayerNotFound = false;
+                    	File newChestFile = new File(chestFile.getAbsolutePath().substring(0, chestFile.getAbsolutePath().indexOf(chestFileName)), UUIDApi.uuidFromName(playerName).toString() + YAML_CHEST_EXTENSION);
+                    	chestFile.renameTo(newChestFile);
+                    	chests.put(UUIDApi.uuidFromName(playerName), InventoryIO.loadFromYaml(newChestFile));
                     }
 
                     if (flagPlayerNotFound) {

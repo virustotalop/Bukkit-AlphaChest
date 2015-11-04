@@ -1,7 +1,8 @@
-name: ${project.name}
-version: ${project.version}
+name: AlphaChest
+version: 1.18.0
 description: Plugin that allows you to have virtual private chests.
-author: kroimon
+author: [kroimon, VirusTotal]
+depend: [LocalUUIDCache]
 
 main: net.sradonia.bukkit.alphachest.AlphaChestPlugin
 database: false
